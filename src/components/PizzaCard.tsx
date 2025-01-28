@@ -3,15 +3,25 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import CartForm from "./CartForm";
 import { useState } from "react";
 
+interface PriceStructure {
+  pequena: number;
+  media: number;
+  grande: number;
+}
+
 interface PizzaCardProps {
   name: string;
   description: string;
-  price: number;
+  price: PriceStructure;
   image: string;
+  category: string;
 }
 
-const PizzaCard = ({ name, description, price, image }: PizzaCardProps) => {
+const PizzaCard = ({ name, description, price, image, category }: PizzaCardProps) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  // Get the lowest price to display
+  const startingPrice = Math.min(price.pequena, price.media, price.grande);
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -25,7 +35,7 @@ const PizzaCard = ({ name, description, price, image }: PizzaCardProps) => {
         <p className="text-gray-600 mb-4 text-sm">{description}</p>
         <div className="flex justify-between items-center">
           <span className="text-brand-brown font-bold text-xl">
-            R$ {price.toFixed(2)}
+            A partir de R$ {startingPrice.toFixed(2)}
           </span>
           <Dialog open={isCartOpen} onOpenChange={setIsCartOpen}>
             <DialogTrigger asChild>
