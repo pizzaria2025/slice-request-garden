@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { Pizza } from "lucide-react";
+import { format } from "date-fns";
 
 const PIZZA_SIZES = [
   { id: "pequena", label: "Pequena", slices: 2 },
@@ -81,8 +82,11 @@ const CartForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    const currentDate = format(new Date(), "dd/MM/yyyy 'às' HH:mm");
+    
     const orderSummary = `
 *Novo Pedido - Brother's Pizzaria*
+${currentDate}
 
 *Cliente:* ${name}
 *Telefone:* ${phone}
@@ -101,6 +105,8 @@ CEP: ${address.zipCode}
 
 *Forma de Pagamento:* ${paymentMethod}
 ${needChange !== null ? `Precisa de troco: ${needChange ? "Sim" : "Não"}` : ""}
+
+Obrigado por realizar seu pedido. Vai fazer pix? Nossa chave é (75) 988510206 - Jeferson Barboza
     `.trim();
 
     const whatsappNumber = "75991662591";

@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { Pizza } from "lucide-react";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -21,8 +22,9 @@ const Hero = () => {
           </p>
           <Button 
             onClick={() => navigate("/menu")}
-            className="bg-pizza-red hover:bg-pizza-red/90 text-white px-8 py-6 text-lg"
+            className="bg-brand-brown hover:bg-brand-brown/90 text-white px-8 py-6 text-lg flex items-center gap-2"
           >
+            <Pizza className="h-6 w-6" />
             Fazer Pedido
           </Button>
         </div>
