@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
-import { Pizza, PizzaSlice } from "lucide-react";
+import { Pizza } from "lucide-react";
 
 const PIZZA_SIZES = [
   { id: "pequena", label: "Pequena", slices: 2 },
