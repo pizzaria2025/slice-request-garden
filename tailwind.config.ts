@@ -19,11 +19,9 @@ export default {
     },
     extend: {
       colors: {
-        pizza: {
-          red: "#D92121",
-          gold: "#FFA500",
-          black: "#222222",
-          gray: "#F5F5F5",
+        brand: {
+          brown: "#8B4513",
+          beige: "#F5F5DC",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

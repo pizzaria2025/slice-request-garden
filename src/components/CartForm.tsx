@@ -5,34 +5,39 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
+import { Pizza, PizzaSlice } from "lucide-react";
 
 const PIZZA_SIZES = [
-  { id: "media", label: "Média" },
-  { id: "grande", label: "Grande" },
-  { id: "familia", label: "Família" },
+  { id: "pequena", label: "Pequena", slices: 2 },
+  { id: "media", label: "Média", slices: 3 },
+  { id: "grande", label: "Grande", slices: 4 },
 ];
 
 const PIZZA_CATEGORIES = {
   tradicionais: [
-    "Mussarela",
-    "Calabresa",
-    "Portuguesa",
-    "Frango",
-    "Margherita",
+    "ALHO", "BACALHAU", "BACALHAU TERIYAKI", "BACON", "BACON CROCANTE",
+    "BACON PRIME", "BRASILEIRA", "CALABRESA", "CALABRESA A CREME 4 QUEIJOS",
+    "CALABRESA CATUPIRY", "CALABRESA COM BACON", "CALABRESA COM GORGONZOLA",
+    "CALABRESA COM MILHO", "BAIANA", "CHAMPIGNON", "FRANGO", "FRANGO BARBECUE",
+    "FRANGO CATUPIRY", "FRANGO CHEDDAR", "FRANGO COM MILHO", "FRANGO CROCANTE",
+    "FRANGO TERIYAKI", "LOMBINHO", "LOMBINHO CATUPIRY", "LOMBINHO CHEDDAR",
+    "MARGUERITA", "MILHO VERDE", "MILHO VERDE CATUPIRY", "MUÇARELA", "NAPOLITANA",
+    "PALMITO", "PEITO DE PERU", "PEITO DE PERU CATUPIRY", "PEITO DE PERU CHEDDAR",
+    "PEPERONNI", "PEPERONNI CREAM CHEESE", "PORTUGUESA", "PRESUNTO", "QUATRO QUEIJOS",
+    "Nordestino", "Nordestino CATUPIRY", "Nordestino CHEDDAR", "SICILIANA",
+    "TOMATE SECO", "VEGETARIANA", "Vegetais"
   ],
   especiais: [
-    "Quatro Queijos",
-    "Pepperoni",
-    "Supreme",
-    "Vegetariana",
-    "Bacon",
+    "ATUM", "ATUM CATUPIRY", "ATUM TERIYAKI", "BAURU", "CAIPIRA",
+    "CAMARÃO", "CAMARÃO CATUPIRY", "CAMARÃO TERIYAKI", "CINCO QUEIJOS",
+    "COSTELINHA  COM BARBECUE", "FILÉ MIGNON", "FILÉ MIGNON ACEBOLADO",
+    "FILÉ MINGON BARBECUE", "SALMÃO TERYAKI"
   ],
   doces: [
-    "Chocolate",
-    "Banana com Canela",
-    "Romeu e Julieta",
-    "Prestígio",
+    "BRIGADEIRO", "BRIGADEIRO COM MORANGO", "CHOCOLATE AO LEITE",
+    "CHOCOLATE BRANCO COM MORANGO", "DOCE DE LEITE", "NUTELLA COM MORANGO",
+    "PAÇOQUITA", "ROMEU E JULIETA"
   ],
 };
 
@@ -75,22 +80,62 @@ const CartForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const orderSummary = `
+*Novo Pedido - Brother's Pizzaria*
+
+*Cliente:* ${name}
+*Telefone:* ${phone}
+
+*Pedido:*
+Tamanho: ${size}
+Sabor: ${flavor}
+
+*Observações:* ${observations || "Nenhuma"}
+*Retirar ingredientes:* ${removeIngredients || "Nenhum"}
+
+*Endereço:*
+${address.street}, ${address.number}
+${address.neighborhood}
+CEP: ${address.zipCode}
+
+*Forma de Pagamento:* ${paymentMethod}
+${needChange !== null ? `Precisa de troco: ${needChange ? "Sim" : "Não"}` : ""}
+    `.trim();
+
+    const whatsappNumber = "75991662591";
+    const encodedMessage = encodeURIComponent(orderSummary);
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
     toast({
-      title: "Pedido enviado com sucesso!",
-      description: "Em breve entraremos em contato para confirmar seu pedido.",
+      title: "Pedido pronto!",
+      description: "Você será redirecionado para o WhatsApp para enviar seu pedido.",
     });
+
+    window.open(whatsappUrl, "_blank");
   };
 
+  const PizzaSizeIcon = ({ slices }: { slices: number }) => (
+    <div className="relative w-12 h-12">
+      <Pizza className="w-full h-full text-brand-brown" />
+      <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-sm font-bold text-brand-beige">
+        {slices}
+      </span>
+    </div>
+  );
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white rounded-lg shadow-md">
+    <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-brand-beige rounded-lg shadow-md">
       <div className="space-y-4">
         <div>
           <Label>Tamanho da Pizza</Label>
-          <RadioGroup value={size} onValueChange={setSize} className="mt-2">
+          <RadioGroup value={size} onValueChange={setSize} className="mt-2 grid grid-cols-3 gap-4">
             {PIZZA_SIZES.map((pizzaSize) => (
-              <div key={pizzaSize.id} className="flex items-center space-x-2">
-                <RadioGroupItem value={pizzaSize.id} id={pizzaSize.id} />
-                <Label htmlFor={pizzaSize.id}>{pizzaSize.label}</Label>
+              <div key={pizzaSize.id} className="flex flex-col items-center space-y-2 p-4 border rounded-lg hover:bg-brand-brown/10 cursor-pointer">
+                <PizzaSizeIcon slices={pizzaSize.slices} />
+                <RadioGroupItem value={pizzaSize.id} id={pizzaSize.id} className="sr-only" />
+                <Label htmlFor={pizzaSize.id} className="text-center">{pizzaSize.label}</Label>
+                <span className="text-sm text-gray-600">{pizzaSize.slices} fatias</span>
               </div>
             ))}
           </RadioGroup>
@@ -99,7 +144,7 @@ const CartForm = () => {
         <div className="space-y-2">
           <Label>Categoria</Label>
           <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger>
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Selecione a categoria" />
             </SelectTrigger>
             <SelectContent>
@@ -114,7 +159,7 @@ const CartForm = () => {
           <div className="space-y-2">
             <Label>Sabor</Label>
             <Select value={flavor} onValueChange={setFlavor}>
-              <SelectTrigger>
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Selecione o sabor" />
               </SelectTrigger>
               <SelectContent>
@@ -135,6 +180,7 @@ const CartForm = () => {
             value={observations}
             onChange={(e) => setObservations(e.target.value)}
             placeholder="Alguma observação especial?"
+            className="min-h-[100px]"
           />
         </div>
 
@@ -145,6 +191,7 @@ const CartForm = () => {
             value={removeIngredients}
             onChange={(e) => setRemoveIngredients(e.target.value)}
             placeholder="Quais ingredientes você quer remover?"
+            className="min-h-[100px]"
           />
         </div>
 
@@ -155,6 +202,7 @@ const CartForm = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Seu nome completo"
+            required
           />
         </div>
 
@@ -165,10 +213,11 @@ const CartForm = () => {
             value={phone}
             onChange={(e) => setPhone(formatPhone(e.target.value))}
             placeholder="(00) 00000-0000"
+            required
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="street">Rua</Label>
             <Input
@@ -176,6 +225,7 @@ const CartForm = () => {
               value={address.street}
               onChange={(e) => setAddress({ ...address, street: e.target.value })}
               placeholder="Nome da rua"
+              required
             />
           </div>
 
@@ -186,6 +236,7 @@ const CartForm = () => {
               value={address.number}
               onChange={(e) => setAddress({ ...address, number: e.target.value })}
               placeholder="Número"
+              required
             />
           </div>
 
@@ -196,6 +247,7 @@ const CartForm = () => {
               value={address.neighborhood}
               onChange={(e) => setAddress({ ...address, neighborhood: e.target.value })}
               placeholder="Bairro"
+              required
             />
           </div>
 
@@ -206,6 +258,7 @@ const CartForm = () => {
               value={address.zipCode}
               onChange={(e) => setAddress({ ...address, zipCode: formatZipCode(e.target.value) })}
               placeholder="00000-000"
+              required
             />
           </div>
         </div>
@@ -243,8 +296,8 @@ const CartForm = () => {
         )}
       </div>
 
-      <Button type="submit" className="w-full bg-pizza-red hover:bg-pizza-red/90">
-        Finalizar Pedido
+      <Button type="submit" className="w-full bg-brand-brown hover:bg-brand-brown/90 text-white">
+        Enviar meu pedido
       </Button>
     </form>
   );

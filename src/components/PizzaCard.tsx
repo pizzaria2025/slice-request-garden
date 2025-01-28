@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import CartForm from "./CartForm";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 interface PizzaCardProps {
   name: string;
@@ -14,29 +13,24 @@ interface PizzaCardProps {
 const PizzaCard = ({ name, description, price, image }: PizzaCardProps) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const handleAddToCart = () => {
-    setIsCartOpen(true);
-  };
-
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <img
         src={image}
         alt={name}
         className="w-full h-48 object-cover"
       />
       <div className="p-4">
-        <h3 className="text-xl font-semibold mb-2">{name}</h3>
-        <p className="text-gray-600 mb-4">{description}</p>
+        <h3 className="text-xl font-semibold mb-2 text-brand-brown">{name}</h3>
+        <p className="text-gray-600 mb-4 text-sm">{description}</p>
         <div className="flex justify-between items-center">
-          <span className="text-pizza-red font-bold text-xl">
+          <span className="text-brand-brown font-bold text-xl">
             R$ {price.toFixed(2)}
           </span>
           <Dialog open={isCartOpen} onOpenChange={setIsCartOpen}>
             <DialogTrigger asChild>
               <Button
-                onClick={handleAddToCart}
-                className="bg-pizza-red hover:bg-pizza-red/90 text-white"
+                className="bg-brand-brown hover:bg-brand-brown/90 text-white"
               >
                 Pedir
               </Button>
